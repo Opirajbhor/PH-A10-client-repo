@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const Navbar = () => {
   const links = (
-    <div className="flex items-center justify-between gap-5 mr-8">
+    <div className="lg:flex lg:flex-row flex-col items-center justify-between gap-5 mr-8">
       <Link>Home</Link>
-      <Link>Issues</Link>
-      <Link>Login</Link>
+      <Link>All Issues</Link>
+      <Link to='/login'>Login</Link>
       <Link>Register</Link>
     </div>
   );
@@ -16,13 +17,14 @@ const Navbar = () => {
       {/* logo */}
       <div>
         <Link to="/" className="text-3xl font-bold text-green-500">
-          {" "}
-          Trackify{" "}
+          Trackify
         </Link>
       </div>
       <div className="flex items-center justify-center ">
         {/* links */}
-        {links}
+        <div className="hidden lg:flex items-center justify-center">
+          {links}
+        </div>
 
         {/* button avatar */}
         <div className="dropdown dropdown-end ">
@@ -48,12 +50,25 @@ const Navbar = () => {
                 <span className="badge">New</span>
               </a>
             </li>
-            <li>
-              <a>Settings</a>
-            </li>
+
             <li>
               <a>Logout</a>
             </li>
+          </ul>
+        </div>
+
+        {/* hambarger menu */}
+        <div className="dropdown dropdown-end ">
+          <div tabIndex={0} role="button" className="btn btn-ghost  avatar">
+            <div className="w-auto md:hidden lg:hidden ">
+              <GiHamburgerMenu />
+            </div>
+          </div>
+          <ul
+            tabIndex="-1"
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+          >
+            {links}
           </ul>
         </div>
       </div>
