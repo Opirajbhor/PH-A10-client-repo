@@ -10,7 +10,7 @@ const RecentComplains = () => {
         {/* card */}
         <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <div className="flex items-center justify-center my-3">
-            <span class="bg-green-100 text-green-800 text-[14px] font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+            <span className="bg-green-100 text-green-800 text-[14px] font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
               Category
             </span>
 

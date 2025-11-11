@@ -1,13 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { MdDarkMode } from "react-icons/md";
+import { MdOutlineWbSunny } from "react-icons/md";
 
 const Navbar = () => {
+  // night mood
+  const [isEnable, setIsEnable] = useState("light");
+  const [modeIcon, setModeIcon] = useState(<MdDarkMode />);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", isEnable);
+  }, [isEnable]);
+
+  const theme = () => {
+    if (isEnable === "light") {
+      setIsEnable("dark");
+      setModeIcon(<MdDarkMode />);
+    }
+    if (isEnable === "dark") {
+      setIsEnable("light");
+      setModeIcon(<MdOutlineWbSunny />);
+    }
+  };
+
   const links = (
     <div className="lg:flex lg:flex-row flex-col items-center justify-between gap-5 mr-8">
       <Link>Home</Link>
       <Link>All Issues</Link>
-      <Link to='/login'>Login</Link>
+      <Link to="/login">Login</Link>
       <Link>Register</Link>
     </div>
   );
@@ -24,6 +45,9 @@ const Navbar = () => {
         {/* links */}
         <div className="hidden lg:flex items-center justify-center">
           {links}
+          <div onClick={theme} className="mr-5 text-2xl cursor-pointer">
+            {modeIcon}
+          </div>
         </div>
 
         {/* button avatar */}
