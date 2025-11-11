@@ -7,10 +7,7 @@ function App() {
 
   return (
     <>
-    <Navbar></Navbar>
-      <div className='text-4xl text-red-500'>
-        hello
-      </div>
+  
     </>
   )
 }

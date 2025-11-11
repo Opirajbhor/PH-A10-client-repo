@@ -4,7 +4,6 @@ import Card from '../Components/HomeCards';
 import RecentComplains from '../Components/RecentComplains';
 import CommunityStats from '../Components/CommunityStats';
 import JoinCTA from '../Components/JoinCTA';
-import Footer from '../Components/Footer';
 
 const HomePage = () => {
     return (
@@ -14,7 +13,6 @@ const HomePage = () => {
             <RecentComplains></RecentComplains>
            <CommunityStats></CommunityStats>
            <JoinCTA></JoinCTA>
-           <Footer></Footer>
         </div>
     );
 };
