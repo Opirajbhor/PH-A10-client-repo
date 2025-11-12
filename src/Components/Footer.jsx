@@ -3,8 +3,8 @@ import { Link } from "react-router";
 
 const Footer = () => {
   return (
-    <div>
-      <footer className="footer sm:footer-horizontal flex items-center justify-between bg-neutral text-neutral-content p-10">
+    <div className="mt-10 border border-green-300 rounded-2xl">
+      <footer className="footer sm:footer-horizontal flex items-center justify-between   p-10">
         <aside>
           <Link to="/" className="text-3xl font-bold text-green-500">
             Trackify
