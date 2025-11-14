@@ -10,6 +10,7 @@ import MyIssues from "../Pages/MyIssues";
 import AddIssues from "../Pages/AddIssues";
 import MyContribution from "../Pages/MyContribution";
 import Profile from "../Pages/Profile";
+import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/myissues",
-        element: <MyIssues></MyIssues>,
+        element: <PrivateRoute><MyIssues></MyIssues></PrivateRoute> ,
       },
       {
         path: "/addissue",
