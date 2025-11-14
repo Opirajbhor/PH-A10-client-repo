@@ -18,7 +18,6 @@ const PrivateRoute = ({ children }) => {
     return()=> unsubscribe;
   }, []);
   if(loading) return <SyncLoader />
-  console.log("current", currentUser);
   if (currentUser) {
     return children;
   }

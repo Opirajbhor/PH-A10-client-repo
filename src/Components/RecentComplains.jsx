@@ -1,56 +1,37 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const RecentComplains = () => {
+  const [issues, setIssues] = useState([]);
+  useEffect(() => {
+    const issuesLoader = async () => {
+      const res = await axios.get("http://localhost:3000/latestissues");
+      return setIssues(res.data);
+    };
+    issuesLoader();
+  }, []);
   return (
     <div>
       {/* tittle */}
       <h1 className="my-8 text-2xl font-bold underline">Recent Complaints</h1>
 
-      <div>
-        {/* card */}
-        <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <div className="flex items-center justify-center my-3">
-            <span className="bg-green-100 text-green-800 text-[14px] font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-              Category
-            </span>
+      {/* all data here */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 my-3 ">
+        {issues.map((issue) => (
+          <div key={issue._id} className="card bg-base-100 w-96 border border-green-300 shadow-sm">
+            <figure>
+              <img src={issue.image} alt={issue.issueTitle} />
+            </figure>
+            <div className="card-body">
+              <h2 className="card-title">{issue.issueTitle}</h2>
 
-            <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">
-              Location
-            </span>
+              <div className="card-actions justify-end">
+                <div className="badge badge-outline">{issue.category}</div>
+                <div className="badge badge-outline">{issue.location}</div>
+              </div>
+            </div>
           </div>
-          <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            Noteworthy technology acquisitions 2021
-          </h5>
-          <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            Here are the biggest enterprise technology acquisitions of 2021 so
-            far, in reverse chronological order.
-          </p>
-          
-
-          <a
-            href="#"
-            className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg 
-        hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 
-        dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-          >
-            See Details
-            <svg
-              className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 10"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 5h12m0 0L9 1m4 4L9 9"
-              />
-            </svg>
-          </a>
-        </div>
+        ))}
       </div>
     </div>
   );

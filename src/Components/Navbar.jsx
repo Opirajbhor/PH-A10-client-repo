@@ -19,7 +19,6 @@ const Navbar = ({ currentUser }) => {
       navigate("/login");
       window.location.reload()
     } catch (error) {
-      console.error("Error signing out:", error);
     }
   };
 
