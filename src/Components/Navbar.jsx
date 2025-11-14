@@ -8,6 +8,8 @@ import { signOut } from "firebase/auth";
 import { auth } from "../Firebase/config.firebase";
 
 const Navbar = ({ currentUser }) => {
+    const serverLink = import.meta.env.VITE_SERVER_URL;
+  
   const navigate = useNavigate();
 
   const { displayName, email, photoURL } = currentUser;
@@ -19,6 +21,7 @@ const Navbar = ({ currentUser }) => {
       navigate("/login");
       window.location.reload()
     } catch (error) {
+      console.log(error)
     }
   };
 

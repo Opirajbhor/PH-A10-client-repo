@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const Allissues = () => {
+  const serverLink = import.meta.env.VITE_SERVER_URL;
   const [issues, setIssues] = useState([]);
   useEffect(() => {
     const issuesLoader = async () => {
-      const res = await axios.get("http://localhost:3000/allIssues");
+      const res = await axios.get(`${serverLink}/allIssues`);
       return setIssues(res.data);
     };
     issuesLoader();
-  }, []);
+  }, [serverLink]);
 
   return (
     <div>

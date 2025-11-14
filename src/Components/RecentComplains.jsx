@@ -2,10 +2,12 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const RecentComplains = () => {
+    const serverLink = import.meta.env.VITE_SERVER_URL;
+
   const [issues, setIssues] = useState([]);
   useEffect(() => {
     const issuesLoader = async () => {
-      const res = await axios.get("http://localhost:3000/latestissues");
+      const res = await axios.get(`${serverLink}/latestissues`);
       return setIssues(res.data);
     };
     issuesLoader();

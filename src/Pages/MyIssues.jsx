@@ -4,8 +4,10 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../Firebase/config.firebase";
 import { FaUser, FaEnvelope, FaPhone, FaHome } from "react-icons/fa";
 import { PiGooglePhotosLogoFill } from "react-icons/pi";
+import toast, { Toaster } from "react-hot-toast";
 
 const MyIssues = () => {
+  const serverLink = import.meta.env.VITE_SERVER_URL;
   // current user
   const [currentUser, setCurrentUser] = useState("");
   useEffect(() => {
@@ -17,17 +19,42 @@ const MyIssues = () => {
   }, []);
   // data
   const [issues, setIssues] = useState([]);
+  const issuesLoader = async () => {
+    const res = await axios.get(`${serverLink}/allIssues`);
+    return setIssues(res.data);
+  };
   useEffect(() => {
-    const issuesLoader = async () => {
-      const res = await axios.get("http://localhost:3000/allIssues");
-      return setIssues(res.data);
-    };
     issuesLoader();
   }, []);
 
   const filterUserData = issues.filter(
     (issue) => currentUser.email === issue.email
   );
+
+  const deleteIssue = async (id) => {
+    try{
+
+    const confirmed = window.confirm("Are you sure you want to delete?");
+    if (!confirmed) return;
+    const idApi = await fetch(`${serverLink}/allIssues/${id}`, {
+      method: "DELETE",
+    });
+
+    const currentID = await idApi.json();
+    console.log(currentID)
+    if (currentID.success == true) {
+      toast.success("Issue Deleted");
+     await issuesLoader();
+    }
+    else {
+      toast.error("Delete failed!");
+    }
+    
+  }
+  catch (error) {
+    toast.error("Something went wrong!");
+  } 
+  };
 
   return (
     <div>
@@ -44,10 +71,11 @@ const MyIssues = () => {
               <th>amount</th>
               <th>status</th>
               <th>Update</th>
+              <th>Delete</th>
             </tr>
           </thead>
           {filterUserData.map((data) => (
-            <tbody>
+            <tbody key={data._id}>
               <tr className=" border-gray-200 border">
                 <td>{data.issueTitle}</td>
                 <td>{data.category}</td>
@@ -74,8 +102,12 @@ const MyIssues = () => {
 
                       <div className="min-h-[300px] flex items-center justify-center bg-gray-50">
                         <div className="w-full max-w-sm bg-white shadow-lg rounded-2xl p-6">
-                            <h1 className="text-center text-2xl font-semibold mb-5">Issue Update Page</h1>
-                            <h3 className=" font-semibold mb-5">Issue Name - {data.issueTitle}</h3>
+                          <h1 className="text-center text-2xl font-semibold mb-5">
+                            Issue Update Page
+                          </h1>
+                          <h3 className=" font-semibold mb-5">
+                            Issue Name - {data.issueTitle}
+                          </h3>
                           {/* title */}
                           <div className="mb-4">
                             <label className="text-sm font-medium text-gray-700">
@@ -150,7 +182,6 @@ const MyIssues = () => {
                             >
                               <option value="ongoing">ongoing</option>
                               <option value="ended">ended</option>
-                              
                             </select>
                           </div>
 
@@ -167,10 +198,19 @@ const MyIssues = () => {
                     </div>
                   </dialog>
                 </td>
+                <td
+                  onClick={() => deleteIssue(data._id)}
+                  className="btn bg-red-500 mt-3"
+                >
+                  Delete
+                </td>
               </tr>
             </tbody>
           ))}
         </table>
+      </div>
+      <div>
+        <Toaster />
       </div>
     </div>
   );

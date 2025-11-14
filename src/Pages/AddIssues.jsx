@@ -5,7 +5,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 const AddIssues = () => {
-  const serverLink = "http://localhost:3000";
+  const serverLink = import.meta.env.VITE_SERVER_URL;
   const [currentUser, setCurrentUser] = useState("");
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
