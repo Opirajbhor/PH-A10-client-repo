@@ -25,7 +25,7 @@ const Allissues = () => {
             className="card bg-base-100 w-96 border border-green-300 shadow-sm"
           >
             <figure>
-              <img src={issue.image} alt={issue.issueTitle} />
+              <img src={issue.image?issue.image:null} alt={issue.issueTitle} />
             </figure>
             <div className="card-body">
               <h2 className="card-title">{issue.issueTitle}</h2>

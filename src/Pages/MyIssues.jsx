@@ -27,33 +27,62 @@ const MyIssues = () => {
     issuesLoader();
   }, []);
 
+  // USER filtered data
   const filterUserData = issues.filter(
-    (issue) => currentUser.email === issue.email
+    (issue) => currentUser.email.toLowerCase() === issue.email.toLowerCase()
   );
 
+  // issue delete function
   const deleteIssue = async (id) => {
-    try{
+    try {
+      const confirmed = window.confirm("Are you sure you want to delete?");
+      if (!confirmed) return;
+      const idApi = await fetch(`${serverLink}/allIssues/${id}`, {
+        method: "DELETE",
+      });
 
-    const confirmed = window.confirm("Are you sure you want to delete?");
-    if (!confirmed) return;
-    const idApi = await fetch(`${serverLink}/allIssues/${id}`, {
-      method: "DELETE",
-    });
+      const currentID = await idApi.json();
+      console.log(currentID);
+      if (currentID.success == true) {
+        toast.success("Issue Deleted");
+        await issuesLoader();
+      } else {
+        toast.error("Delete failed!");
+      }
+    } catch (error) {
+      toast.error("Something went wrong!");
+    }
+  };
 
-    const currentID = await idApi.json();
-    console.log(currentID)
-    if (currentID.success == true) {
-      toast.success("Issue Deleted");
-     await issuesLoader();
-    }
-    else {
-      toast.error("Delete failed!");
-    }
-    
-  }
-  catch (error) {
-    toast.error("Something went wrong!");
-  } 
+  // issue update function
+  const [selectedIssue, setSelectedIssue] = useState(null);
+  console.log(selectedIssue);
+  const updateIssue = async (e) => {
+    e.preventDefault();
+    const id = e.target._id.value;
+    const issueData = {
+      issueTitle: e.target.issueTitle.value,
+      category: e.target.category.value,
+      location: e.target.location.value,
+      description: e.target.description.value,
+      amount: e.target.amount.value,
+      image: e.target.image.value,
+      status: e.target.status.value,
+      date: e.target.date.value,
+    };
+    console.log(issueData);
+
+    axios
+      .patch(`${serverLink}/allIssues/${id}`, issueData)
+      .then((res) => {
+        document.getElementById("my_modal_3").close();
+          setCurrentUser(null)
+        toast.success("update success");
+        issuesLoader();
+      })
+      .catch((err) => {
+        toast.error("update failed");
+      });
   };
 
   return (
@@ -74,140 +103,200 @@ const MyIssues = () => {
               <th>Delete</th>
             </tr>
           </thead>
+          {/* all user data here---------------------- */}
           {filterUserData.map((data) => (
             <tbody key={data._id}>
-              <tr className=" border-gray-200 border">
+              <tr className=" border-gray-200 border ">
                 <td>{data.issueTitle}</td>
                 <td>{data.category}</td>
                 <td>{data.description}</td>
                 <td>{data.amount}</td>
                 <td>{data.status}</td>
+
+                {/* update-------------------------- */}
                 <td>
                   <button
                     className="btn bg-green-700 hover:bg-green-900"
-                    onClick={() =>
-                      document.getElementById("my_modal_3").showModal()
-                    }
+                    onClick={() => {
+                      setSelectedIssue(data);
+                      document.getElementById("my_modal_3").showModal();
+                    }}
                   >
                     Update
                   </button>
-                  <dialog id="my_modal_3" className="modal">
-                    <div className="modal-box">
-                      <form method="dialog">
-                        {/* if there is a button in form, it will close the modal */}
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                          ✕
-                        </button>
-                      </form>
-
-                      <div className="min-h-[300px] flex items-center justify-center bg-gray-50">
-                        <div className="w-full max-w-sm bg-white shadow-lg rounded-2xl p-6">
-                          <h1 className="text-center text-2xl font-semibold mb-5">
-                            Issue Update Page
-                          </h1>
-                          <h3 className=" font-semibold mb-5">
-                            Issue Name - {data.issueTitle}
-                          </h3>
-                          {/* title */}
-                          <div className="mb-4">
-                            <label className="text-sm font-medium text-gray-700">
-                              Title
-                            </label>
-                            <div className="relative mt-1">
-                              <input
-                                name="name"
-                                type="text"
-                                placeholder="New Title"
-                                className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                              />
-                            </div>
-                          </div>
-                          {/* Category */}
-                          <div className="mb-4">
-                            <label className="font-medium">Category</label>
-                            <select
-                              name="category"
-                              className="w-full border px-3 py-2 rounded-lg mt-1"
-                              required
-                            >
-                              <option value="">Select Category</option>
-                              <option value="Illegal Construction">
-                                Illegal Construction
-                              </option>
-                              <option value="Broken Public Property">
-                                Broken Public Property
-                              </option>
-                              <option value="Road Damage">Road Damage</option>
-                              <option value="Garbage Issue">
-                                Garbage Issue
-                              </option>
-                            </select>
-                          </div>
-                          {/* amount */}
-                          <div className="mb-4">
-                            <label className="text-sm font-medium text-gray-700">
-                              Amount
-                            </label>
-                            <div className="relative mt-1">
-                              <input
-                                name="amount"
-                                type="text"
-                                placeholder="New amount"
-                                className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                              />
-                            </div>
-                          </div>
-                          {/* description */}
-                          <div className="mb-4">
-                            <label className="text-sm font-medium text-gray-700">
-                              Description
-                            </label>
-                            <div className="relative mt-1">
-                              <input
-                                name="description"
-                                type="textarea"
-                                placeholder="New description"
-                                className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                              />
-                            </div>
-                          </div>
-
-                          {/* Category */}
-                          <div className="mb-4">
-                            <label className="font-medium">Category</label>
-                            <select
-                              name="category"
-                              className="w-full border px-3 py-2 rounded-lg mt-1"
-                              required
-                            >
-                              <option value="ongoing">ongoing</option>
-                              <option value="ended">ended</option>
-                            </select>
-                          </div>
-
-                          {/* Buttons */}
-                          <div className="space-y-3">
-                            <button
-                              className={`w-full bg-green-700 text-white py-2 rounded-lg hover:bg-green-800 transition cursor-pointer `}
-                            >
-                              Update Issue
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </dialog>
                 </td>
-                <td
-                  onClick={() => deleteIssue(data._id)}
-                  className="btn bg-red-500 mt-3"
-                >
-                  Delete
+
+                {/* delete------------------------- */}
+                <td>
+                  <button
+                    onClick={() => deleteIssue(data._id)}
+                    className="btn bg-red-700 hover:bg-red-900"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             </tbody>
           ))}
         </table>
+        {/* modal update */}
+        <dialog id="my_modal_3" className="modal">
+          <div className="modal-box">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button onClick={()=>setSelectedIssue(null)} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                ✕
+              </button>
+            </form>
+
+            {selectedIssue && (
+              <form
+                onSubmit={updateIssue}
+                className="min-h-[300px] flex items-center justify-center bg-gray-50"
+              >
+                <div className="w-full max-w-sm bg-white shadow-lg rounded-2xl p-6">
+                  <h1 className="text-center text-2xl font-semibold mb-5">
+                    Issue Update Page
+                  </h1>
+
+                  {/* title */}
+                  <div className="mb-4">
+                    <label className="text-sm font-medium text-gray-700">
+                      Title
+                    </label>
+                    <div className="relative mt-1">
+                      <input
+                        name="issueTitle"
+                        defaultValue={selectedIssue.issueTitle}
+                        type="text"
+                        placeholder="New Title"
+                        className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  {/* Category */}
+                  <div className="mb-4">
+                    <label className="font-medium">Category</label>
+                    <select
+                      name="category"
+                      defaultValue={selectedIssue.category}
+                      className="w-full border px-3 py-2 rounded-lg mt-1"
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      <option value="Illegal Construction">
+                        Illegal Construction
+                      </option>
+                      <option value="Broken Public Property">
+                        Broken Public Property
+                      </option>
+                      <option value="Road Damage">Road Damage</option>
+                      <option value="Garbage Issue">Garbage Issue</option>
+                    </select>
+                  </div>
+                  {/* location */}
+                  <div className="mb-4">
+                    <label className="text-sm font-medium text-gray-700">
+                      Location
+                    </label>
+                    <div className="relative mt-1">
+                      <input
+                        name="location"
+                        defaultValue={selectedIssue.location}
+                        type="text"
+                        placeholder="New location"
+                        className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  {/* date */}
+                  <div className="mb-4">
+                    <label className="text-sm font-medium text-gray-700">
+                      Date
+                    </label>
+                    <div className="relative mt-1">
+                      <input
+                        readOnly
+                        value={new Date().toLocaleDateString("en-UK")}
+                        type="text"
+                        name="date"
+                        className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  {/* Image */}
+                  <div className="mb-4">
+                    <label className="text-sm font-medium text-gray-700">
+                      Image
+                    </label>
+                    <div className="relative mt-1">
+                      <input
+                        name="image"
+                        defaultValue={selectedIssue.image}
+                        type="text"
+                        placeholder="New image link"
+                        className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  {/* amount */}
+                  <div className="mb-4">
+                    <label className="text-sm font-medium text-gray-700">
+                      Amount
+                    </label>
+                    <div className="relative mt-1">
+                      <input
+                        name="amount"
+                        defaultValue={selectedIssue.amount}
+                        type="text"
+                        placeholder="New amount"
+                        className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  <input type="hidden" name="_id" value={selectedIssue._id} />
+                  {/* description */}
+                  <div className="mb-4">
+                    <label className="text-sm font-medium text-gray-700">
+                      Description
+                    </label>
+                    <div className="relative mt-1">
+                      <textarea
+                        name="description"
+                        defaultValue={selectedIssue.description}
+                        placeholder="New description"
+                        className="w-full  border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  {/* status */}
+                  <div className="mb-4">
+                    <label className="font-medium">Status</label>
+                    <select
+                      name="status"
+                      defaultValue={selectedIssue.status}
+                      className="w-full border px-3 py-2 rounded-lg mt-1"
+                      required
+                    >
+                      <option value="ongoing">ongoing</option>
+                      <option value="ended">ended</option>
+                    </select>
+                  </div>
+
+                  {/* update issue Buttons */}
+                  <div className="space-y-3">
+                    <button
+                      className={`w-full bg-green-700 text-white py-2 rounded-lg hover:bg-green-800 transition cursor-pointer `}
+                    >
+                      Update Issue
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
+          </div>
+        </dialog>
       </div>
       <div>
         <Toaster />
