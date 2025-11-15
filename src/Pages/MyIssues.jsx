@@ -5,11 +5,13 @@ import { auth } from "../Firebase/config.firebase";
 import { FaUser, FaEnvelope, FaPhone, FaHome } from "react-icons/fa";
 import { PiGooglePhotosLogoFill } from "react-icons/pi";
 import toast, { Toaster } from "react-hot-toast";
+import { SyncLoader } from "react-spinners";
+
 
 const MyIssues = () => {
   const serverLink = import.meta.env.VITE_SERVER_URL;
   // current user
-  const [currentUser, setCurrentUser] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -26,11 +28,11 @@ const MyIssues = () => {
   useEffect(() => {
     issuesLoader();
   }, []);
-
+ 
   // USER filtered data
-  const filterUserData = issues.filter(
+  const filterUserData =issues.filter(
     (issue) => currentUser.email.toLowerCase() === issue.email.toLowerCase()
-  );
+  )
 
   // issue delete function
   const deleteIssue = async (id) => {
@@ -56,7 +58,6 @@ const MyIssues = () => {
 
   // issue update function
   const [selectedIssue, setSelectedIssue] = useState(null);
-  console.log(selectedIssue);
   const updateIssue = async (e) => {
     e.preventDefault();
     const id = e.target._id.value;
@@ -70,13 +71,12 @@ const MyIssues = () => {
       status: e.target.status.value,
       date: e.target.date.value,
     };
-    console.log(issueData);
 
     axios
       .patch(`${serverLink}/allIssues/${id}`, issueData)
       .then((res) => {
         document.getElementById("my_modal_3").close();
-          setCurrentUser(null)
+          setSelectedIssue(null)
         toast.success("update success");
         issuesLoader();
       })
@@ -110,7 +110,7 @@ const MyIssues = () => {
                 <td>{data.issueTitle}</td>
                 <td>{data.category}</td>
                 <td>{data.description}</td>
-                <td>{data.amount}</td>
+                <td>৳{data.amount}</td>
                 <td>{data.status}</td>
 
                 {/* update-------------------------- */}
@@ -245,9 +245,10 @@ const MyIssues = () => {
                       Amount
                     </label>
                     <div className="relative mt-1">
+                      <span className="absolute left-3 top-2.5">৳</span>
                       <input
                         name="amount"
-                        defaultValue={selectedIssue.amount}
+                        defaultValue={`${selectedIssue.amount}`}
                         type="text"
                         placeholder="New amount"
                         className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
