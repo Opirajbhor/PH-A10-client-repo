@@ -5,10 +5,12 @@ import { FaArrowLeft } from "react-icons/fa";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../Firebase/config.firebase";
 import toast, { Toaster } from "react-hot-toast";
+import IssueContribution from "../Components/IssueContribution.jsx";
 
 const IssueDetail = () => {
   const location = useLocation();
   const serverLink = import.meta.env.VITE_SERVER_URL;
+  const [issuesContribution, setIssuesContribution] = useState([]);
 
   const issue = location.state?.issue || {};
   const [currentUser, setCurrentUser] = useState(null);
@@ -20,19 +22,12 @@ const IssueDetail = () => {
     });
   }, []);
 
-  if (!issue) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500 text-xl">No issue data found!</p>
-      </div>
-    );
-  }
-
   //   handleContribute button
   const handleContribute = async (e) => {
     e.preventDefault();
     const contributeData = {
       issueId: e.target._id.value,
+      category: e.target.category.value,
       issueTitle: e.target.issueTitle.value,
       amount: e.target.amount.value,
       email: e.target.email.value,
@@ -50,12 +45,32 @@ const IssueDetail = () => {
       );
 
       toast.success("Successfully Added!");
+      setIssuesContribution((prev)=>[...prev, contributeData])
     } catch (error) {
       toast.error("Error to Contribute!");
     }
     e.target.reset();
     document.getElementById("my_modal_3").close();
   };
+
+  // issue contribution api
+  // data
+  const issuesLoader = async () => {
+    const res = await axios.get(`${serverLink}/contribution`);
+    return setIssuesContribution(res.data);
+  };
+  useEffect(() => {
+    issuesLoader();
+  }, []);
+
+  // -------------------------------
+  if (!issue) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-red-500 text-xl">No issue data found!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -254,6 +269,7 @@ const IssueDetail = () => {
                   </div>
 
                   <input type="hidden" name="_id" value={issue._id} />
+                  <input type="hidden" name="category" value={issue.category} />
                   {/* Additional info - (if needed) */}
                   <div className="mb-4">
                     <label className="text-sm font-medium text-gray-700">
@@ -283,6 +299,11 @@ const IssueDetail = () => {
         </dialog>
       </div>
       <Toaster />
+      {/* <IssueDetailssueContribution></issueContribution> */}
+      <IssueContribution
+        issue={issue}
+        issuesContribution={issuesContribution}
+      ></IssueContribution>
     </div>
   );
 };

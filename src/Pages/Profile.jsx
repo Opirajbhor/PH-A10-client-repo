@@ -19,7 +19,6 @@ const Profile = () => {
       }
     });
   }, []);
-  console.log(currentUser);
   const { displayName, email, photoURL, phoneNumber, emailVerified } =
     currentUser;
 
