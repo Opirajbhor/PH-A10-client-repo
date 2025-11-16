@@ -38,8 +38,7 @@ const Register = () => {
         updateProfile(auth.currentUser, {
           displayName: name,
           photoURL: image,
-        })
-          .then(() => navigate("/"))
+        }).then(() => navigate("/"));
         //   .catch(() => toast.error("update error"));
       });
     }
@@ -87,6 +86,11 @@ const Register = () => {
                   placeholder="Password"
                   name="password"
                 />
+                <div className="text-left">
+                  ● Must have an Uppercase letter in the password <br />● Must
+                  have a Lowercase letter in the password <br /> ● Length must be at
+                  least 6 characters
+                </div>
                 <div>
                   Already have an account?{" "}
                   <Link to="/login" className="text-green-500 font-bold my-2">

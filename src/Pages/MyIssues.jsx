@@ -7,7 +7,6 @@ import { PiGooglePhotosLogoFill } from "react-icons/pi";
 import toast, { Toaster } from "react-hot-toast";
 import { SyncLoader } from "react-spinners";
 
-
 const MyIssues = () => {
   const serverLink = import.meta.env.VITE_SERVER_URL;
   // current user
@@ -28,17 +27,16 @@ const MyIssues = () => {
   useEffect(() => {
     issuesLoader();
   }, []);
- 
+
   // USER filtered data
-  const filterUserData =issues.filter(
+  const filterUserData = issues.filter(
     (issue) => currentUser.email.toLowerCase() === issue.email.toLowerCase()
-  )
+  );
 
   // issue delete function
   const deleteIssue = async (id) => {
     try {
-      const confirmed = window.confirm("Are you sure you want to delete?");
-      if (!confirmed) return;
+      
       const idApi = await fetch(`${serverLink}/allIssues/${id}`, {
         method: "DELETE",
       });
@@ -76,7 +74,7 @@ const MyIssues = () => {
       .patch(`${serverLink}/allIssues/${id}`, issueData)
       .then((res) => {
         document.getElementById("my_modal_3").close();
-          setSelectedIssue(null)
+        setSelectedIssue(null);
         toast.success("update success");
         issuesLoader();
       })
@@ -93,10 +91,10 @@ const MyIssues = () => {
         </h1>
         <table className="table table-xm">
           <thead>
-            <tr className="text-[16px] font-bold text-green-600">
+            <tr className="text-[16px]  font-bold text-green-600">
               <th>Issue Title</th>
               <th>category</th>
-              <th>description</th>
+              <th className="hidden md:flex lg:flex">description</th>
               <th>amount</th>
               <th>status</th>
               <th>Update</th>
@@ -109,7 +107,7 @@ const MyIssues = () => {
               <tr className=" border-gray-200 border ">
                 <td>{data.issueTitle}</td>
                 <td>{data.category}</td>
-                <td>{data.description}</td>
+                <td className="hidden md:flex lg:flex">{data.description}</td>
                 <td>৳{data.amount}</td>
                 <td>{data.status}</td>
 
@@ -129,12 +127,31 @@ const MyIssues = () => {
                 {/* delete------------------------- */}
                 <td>
                   <button
-                    onClick={() => deleteIssue(data._id)}
+                    onClick={() =>
+                    document.getElementById("my_modal_5").showModal()
+                  }
                     className="btn bg-red-700 hover:bg-red-900"
                   >
                     Delete
                   </button>
                 </td>
+                
+                <dialog
+                  id="my_modal_5"
+                  className="modal modal-bottom sm:modal-middle"
+                >
+                  <div className="modal-box">
+                    <h3 className="font-bold text-lg">Do you want to delete the Issue?</h3>
+                    <div className="modal-action">
+                      <form method="dialog">
+                        {/* if there is a button in form, it will close the modal */}
+                      <button onClick={() => deleteIssue(data._id)} className="btn bg-red-600 p-5  mr-5">Yes Delete</button>
+
+                        <button className="btn bg-green-600">Cancel</button>
+                      </form>
+                    </div>
+                  </div>
+                </dialog>
               </tr>
             </tbody>
           ))}
@@ -144,7 +161,10 @@ const MyIssues = () => {
           <div className="modal-box">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
-              <button onClick={()=>setSelectedIssue(null)} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              <button
+                onClick={() => setSelectedIssue(null)}
+                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              >
                 ✕
               </button>
             </form>

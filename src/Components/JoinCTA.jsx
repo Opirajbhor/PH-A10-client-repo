@@ -1,4 +1,5 @@
 import React from "react";
+import { Typewriter } from 'react-simple-typewriter'
 
 const JoinCTA = () => {
   return (
@@ -12,7 +13,16 @@ const JoinCTA = () => {
       <div className="hero-overlay rounded-2xl"></div>
       <div className="hero-content text-neutral-content text-center">
         <div className="max-w-md">
-          <h1 className="mb-5 text-5xl font-bold">Join Clean Drive</h1>
+          <h1 className="mb-5 text-5xl font-bold"> <Typewriter
+            words={['Join Clean Drive']}
+            loop={5}
+            cursor
+            cursorStyle='_'
+            typeSpeed={70}
+            deleteSpeed={50}
+            delaySpeed={1000}
+            
+          /></h1>
           <p className="mb-5">
             a community initiative to keep our surroundings clean and green. Report waste issues, raise awareness, and take part in local cleanup events to make your city a healthier place to live.
           </p>

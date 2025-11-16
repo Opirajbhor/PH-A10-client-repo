@@ -17,7 +17,6 @@ const MyContribution = () => {
       }
     });
   }, []);
-  console.log(currentUser);
   // issue contribution api
   // data
   const issuesLoader = async () => {
@@ -31,13 +30,12 @@ const MyContribution = () => {
   const userData = issuesContribution.filter(
     (data) => data.email === currentUser.email
   );
-  console.log(userData);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
       <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-800">Contributions</h2>
+          <h2 className="text-lg font-semibold text-gray-800">Contributions ({userData.length})</h2>
           <p className="text-sm text-gray-500 mt-1">
             Recent contributors and contribution amounts
           </p>

@@ -15,16 +15,30 @@ const Allissues = () => {
     issuesLoader();
   }, [serverLink]);
 
-  // issueDetail button function
-  const issueDetail = (id) => {
-    navigate(`/allIssues/${id}`, { state: { state: data } });
-  };
-
   return (
     <div>
       <h1 className="text-2xl my-10 font-bold text-green-600">
         Total Issues ({issues.length})
       </h1>
+      {/* filter */}
+      <div className="flex items-center justify-between border p-3 rounded-2xl">
+        <h3>Filter Issue Data</h3>
+        {/* category */}
+        <select defaultValue="Select Category" className="select ">
+          <option disabled={true}>Select Category</option>
+          <option value='Garbage'>Garbage</option>
+          <option value='Illegal Construction'>Illegal Construction</option>
+          <option value='Broken Public Property'>Broken Public Property</option>
+          <option value='Road Damage'>Road Damage</option>
+        </select>
+        {/* Select status */}
+        <select defaultValue="Select status" className="select ">
+          <option disabled={true}>Select status</option>
+          <option value='ongoing'>ongoing</option>
+          <option value='ended'>ended</option>
+          
+        </select>
+      </div>
       {/* all data here */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 my-3 ">
         {issues.map((issue) => (
@@ -54,11 +68,13 @@ const Allissues = () => {
             </div>
             <button
               onClick={() => {
-                navigate(`/allissues/${issue._id}`, { state: { issue: issue } });
+                navigate(`/allissues/${issue._id}`, {
+                  state: { issue: issue },
+                });
               }}
               className="btn bg-green-700 hover:bg-green-800"
             >
-              View Details
+              See Details
             </button>
           </div>
         ))}
