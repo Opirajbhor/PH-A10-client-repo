@@ -8,8 +8,8 @@ import { signOut } from "firebase/auth";
 import { auth } from "../Firebase/config.firebase";
 
 const Navbar = ({ currentUser }) => {
-    const serverLink = import.meta.env.VITE_SERVER_URL;
-  
+  const serverLink = import.meta.env.VITE_SERVER_URL;
+
   const navigate = useNavigate();
 
   const { displayName, email, photoURL } = currentUser;
@@ -19,9 +19,9 @@ const Navbar = ({ currentUser }) => {
     try {
       await signOut(auth);
       navigate("/login");
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -36,11 +36,11 @@ const Navbar = ({ currentUser }) => {
   const theme = () => {
     if (isEnable === "light") {
       setIsEnable("dark");
-      setModeIcon(<MdDarkMode />);
+      setModeIcon(<MdOutlineWbSunny />);
     }
     if (isEnable === "dark") {
       setIsEnable("light");
-      setModeIcon(<MdOutlineWbSunny />);
+      setModeIcon(<MdDarkMode />);
     }
   };
   // ---------------
@@ -79,7 +79,9 @@ const Navbar = ({ currentUser }) => {
           className="menu menu-sm dropdown-content bg-base-100 rounded-box z-100 mt-3 w-52 p-2 shadow"
         >
           <li>
-            <Link to="/profile" className="justify-between">Profile</Link>
+            <Link to="/profile" className="justify-between">
+              Profile
+            </Link>
           </li>
 
           <li>
